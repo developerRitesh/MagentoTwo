@@ -1,0 +1,255 @@
+first of all create a namespace , name space of our module is MagentoTwo
+Create a module , in our case i have created module as MagentoModule
+
+setup basic module 
+-------------------------------------------------------
+1. To create basic setup first of all create a file  in our module directory i.e MagentoModule->registration.php
+2. create a file named module.xml in MagentoModule->etc->module.xml
+
+after that enter the following command in the root directory so that magento can acknowledge your module 
+------------------------------------------------------- 
+ sudo php bin/magento cache:flush
+ sudo php bin/magento setup:upgrade
+ sudo chmod -R 777 var/
+
+
+Thats it now your module should be registered by magento. 
+
+to check status of your module in magento enter 
+------------------------------------------------------------ 
+sudo php bin/magento module:status 
+
+your module should not be in list of disabled modules 
+
+Now the next step is to create a controller 
+------------------------------------------------------------
+1. Create a folder named Controller in MagentoModule->Controller.
+
+2.Controller are not called itself in magento , to call a controller we have to create a router , so we will create a file as 
+	MagentoModule->etc->frontend->routes.xml
+
+Note :    <route id="routerid" frontName="magentotwomodule">
+	            <module name="MagentoTwo_MagentoModule" />
+	       </route>
+HERE INSIDE THE routes.xml we will specify our module name , a router_id and a frontname , frontname will be used for url and routerid will be used for layout files .
+
+3. Now create a new controller inside the Controller folder i.e MagentoModule->Controller->ControllerOne.Note a controller is defined by folder , you can have as many controller as you want inside the Controller folder , i.e you can create another controller as 
+
+  MagentoModule->Controller->ControllerTwo
+
+But We are not there yet although we have created a controller we have not defined what we want to display inside the controller so for that we have to create layout file . 
+
+for creating a layout create  MagentoModule->view->frontend->layout->routerid_controller_action.xml
+		ie. routerid_controllerone_action.xml
+
+By creating a layout we have told magento which type of layout we want to have in our page 		
+
+note in the layout file we have option to create phtml .lets look at our routerid_controllerone_action.xml file 
+
+    <body>
+        <referenceContainer name="content">
+            <block 
+            	class="Magento\Framework\View\Element\Template" 
+            	name="BlockOne" 
+            	template="Ritesh_Helloworld::TemplateOne.phtml">
+            </block>
+        </referenceContainer>
+    </body>
+
+look at the block container , here we have class option in the class option we have used core magento block , we can have our own block which we will study later on.
+
+name tag attribute is used to name this block so that it could be used for reference in another code block 
+
+template attribute is the actual thing we are concerned of here we have to provide a phtml for this template , as we have not created a phtml yet , 
+
+we will create one for now in 
+MagentoModule->view->frontend->templates->TemplateOne.phtml
+
+now we have 
+
+created the controller ControllerOne
+created a layout file for the controller routerid_controllerone_action.xml 
+created the template file TemplateOne.phtml
+
+
+Atlast we are done , to reflect our changes we  will enter the following commmand 
+
+ sudo php bin/magento cache:flush
+ sudo php bin/magento setup:upgrade
+ sudo chmod -R 777 var/
+
+
+ Now enter the url magentotwomodule/controllerone/action , you should see the contents of TemplateOne.phtml
+
+
+ Creating Block 
+ ----------------------------------------------------------------------
+
+ Now lets add some functionality to our phtml file 
+
+ lets recall what we have learned  following the above process 
+
+	MagentoModule->Controller->ControllerTwo   [creating the controller]
+	MagentoModule->view->frontend->layout->routerid_controllertwo_action.xml
+
+	but here we will change one thing 
+
+	<body>
+	    <referenceContainer name="content">
+	        <block 
+	        	class="MagentoTwo\MagentoModule\Block\BlockTwo" 
+	        	name="BlockTwoName" 
+	        	template="MagentoTwo_MagentoModule::TemplateTwo.phtml">
+	        </block>
+	    </referenceContainer>
+	</body>
+
+look here class="MagentoTwo\MagentoModule\Block\BlockTwo" 
+
+in the previous layout file MagentoModule->view->frontend->layout->routerid_controllerone_action.xml, we had class="Magento\Framework\View\Element\Template" , the reason to change this is because we want to include our own block instead of magento so for that reason we have defined name of our block here BlockTwo , so lets create the block   
+
+MagentoModule->Block->BlockTwo.php , in this i have created a functoin named loadData();
+
+Now we will create template to use this function as it is required by the phtml file 
+
+MagentoModule->view->frontend->templates->TemplateTwo.phtml
+
+here to use our function we have used <?php echo $this->loadData(); ?> note that the function is defined BlockTwo block
+and the template in which we used the block is TemplateTwo.phtml , well thats it .
+
+Fetching data from table A.K.A crating models 
+----------------------------------------------------------
+
+To fetch data from database we need to create a model 
+
+MagentoModule->Model->Data.php
+
+as we can see from our model 
+
+	$this->_init('MagentoTwo\MagentoModule\Model\ResourceModel\Data');
+
+	it referes to the following directory , so lets create it also . remember in each model we specify a ResourceModel , in that we specify our table name and the primary key associated with that table i.e id
+
+thats it the data can be fetched with only these but in order to be able to perform specific dataoperation we have to create a collection , in collection we specify name of the model and the resourse model associated with it.  
+
+Now we are all set up to fetch data , but where to fetch data ? , Data is fetched in the Block Section , so lets create new Block, so we have created a new block named CustomTable , lets have a look at it .this block is different from the block that we created earlier(BlockTwo) in 2 ways , here we have included 
+
+1. use MagentoTwo\MagentoModule\Model\Data; which is our created model 
+2. function __construct(Context $context, Data $model) Our Model class is being passed to the constructor in the model and we have used $this->model = $model; to use our created model class Data.php
+
+
+we in model we have also created a function getTableCollectionData and called $this->model->getCollection(); so we are fetching data of the table from the model we have created :) , butttt.. we are not done yet ... to see this data loaded we should have a controller , so lets create a controller hmm.. we have two controller already what we can actually do is create an action instead . lets create an action named TableData.php , so lets create layout file for this action and set our block and template for this action. 
+
+MagentoModule->view->frontend->layout->routerid_controllertwo_tabledata.xml (our layout file)
+MagentoModule->view->frontend->templates->CustomTableTemplate.phtml    (our phtml file)
+
+after hated setup upgrade , cache, chmod command i am able to view my table data . thats it for fetching data from the tables
+
+Some Commands to manipulate data 
+---------------------------------------------------
+
+loading the data 
+
+ $this->model->load(1) (loading data by id) be carefull with var_dump() use this var_dump($getting_item_by_id->getData())
+ $this->model->getCollection()  (loading all data)
+
+manipulating the data 
+
+	$itemOne= $this->model->load(1);
+	$itemOne->setName('xyz');
+	$itemOne->setAge('10');
+	$itemOne->save();
+
+deleting the data 
+
+$test->load(2); 
+$test->delete(2);
+
+
+Adding the data (setting up a customer form in magento 2)
+-----------------------------------------------------------
+
+lets add a simple form on the same template CustomTableTemplate.phtml , lets look at it 
+
+	action="<?php echo $this->getUrl("magentotwomodule/controllertwo/addtabledata")?>"
+
+	this suggest where the data should be taken with the request , so lets create a controller AddTableData , now in this controller we have not used constructor because we are not in need to create a page layout we just want to insert data into the database and redirect user to same page again , 
+
+to insert the data we have used , 
+
+$item = $this->_objectManager->create("MagentoTwo\MagentoModule\Model\Data");
+$item->setName($name);
+$item->setAge($age);
+$item->setAddress($address);
+$item->save();
+
+
+via the __objectManager we have used created a connection with the required model 
+	$this->_objectManager->create("MagentoTwo\MagentoModule\Model\Data");
+and used this connection to insert data into the database then we have redirected the user to the same page again.
+
+
+
+Now look at some designing aspects 
+------------------------------------------------------------------
+changing the layout 
+
+go to routerid_controllertwo_tabledata.xml in the page layout section 
+
+	layout="1column"  this could be changed to 
+
+	
+		layout="1column" 
+		layout="2columns-left" 
+		layout="2columns-right" 
+		layout="3columns" 
+
+
+Adding static files to magento module 
+----------------------------------------------------------------------
+to add static files to your magento module we have to create a folder named web in the module view directory and put our static files there i.e 
+
+	MagentoModule->view->frontend->web->css->mycss.css   (our css file)
+	MagentoModule->view->frontend->web->js->myjs.css
+
+after  creating these files lets include these files to our page layout frontend->layout->routerid_controllerone_action.xml
+
+
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+	<head>
+		<css src="MagentoTwo_MagentoModule::css/mycss.css"/>
+		<script src="MagentoTwo_MagentoModule::js/myjs.js"/>
+	</head>
+</page>
+
+Thats'it we have successfully changed the stylesheet and js of the magento module
+
+
+Customising the layout , for customising the layout we should have layout atleast to move block here and there 
+----------------------------------------------------------------------------------------------------------------
+so we will use a setup with the demo data for the same . 
+
+
+Backend Admin Menu 
+------------------------------------------------------------------------------------------
+So now we we will create a simple backend menu onclicking on it we should see a simple html customer listing page 
+
+for this we create a layout to modify our admin menu at 
+
+	MagentoModule->etc->adminhtml->menu.xml
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+

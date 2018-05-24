@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="MagentoTwo_MagentoModule::Customer_demo"
+             title="Customer"
+             module="MagentoTwo_MagentoModule"
+             sortOrder="9999"
+             resource="Magento_Backend::content" />
+
+        <add id="MagentoTwo_MagentoModule::second_level_demo"
+             title="Customer Listing"
+             module="MagentoTwo_MagentoModule"
+             sortOrder="0"
+             action="frontnamebackend/customer/listing"
+             parent="MagentoTwo_MagentoModule::Customer_demo"
+             resource="Magento_Backend::content" />     
+    </menu>
+</config>

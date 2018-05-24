@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="2columns-right" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+
+    
+	<head>
+		<css src="MagentoTwo_MagentoModule::css/mycss.css"/>
+		<script src="MagentoTwo_MagentoModule::js/myjs.js"/>
+	</head>
+
+
+
+    <body>
+        <referenceContainer name="content">
+            <block class="Magento\Framework\View\Element\Template" name="contactForm" template="MagentoTwo_MagentoModule::TemplateOne.phtml"></block>
+        </referenceContainer>
+    </body>
+
+
+
+
+</page>
+
+<!-- here  class="Magento\Framework\View\Element\Template" is the default class used by magento , it represent that we are not using any block for this controller to load any data, if you we see another layout you will found path of our block html here -->

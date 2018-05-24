@@ -1,0 +1,60 @@
+<h1> Custom Table Template </h1>
+
+<?php 
+
+	$ourTableData = $this->getTableCollectionData(); 
+	$collection = $ourTableData ;
+// So our model here is $this->model 
+
+	$itemOne= $this->model->load(1);
+	//var_dump($getting_item_by_id->getData())
+	$getting_all_item = $this->model->getCollection();
+	//var_dump($getting_all_item->getData())
+
+	// $itemTwo = $this->model->load(2);
+	// $itemTwo->delete(2);
+
+?>
+
+
+<table class="table" >
+	<thead>
+	  <tr>
+	    <th>Id</th>
+	    <th>Name</th>
+	    <th>Age</th>
+	    <th>Address</th>
+	  </tr>
+	</thead>
+	<?php foreach ($ourTableData as $table) : ?>
+		<tr>
+			<td><?php echo $table->getId(); ?></td>
+			<td><?php echo $table->getName(); ?></td>
+			<td><?php echo $table->getAge(); ?></td>
+			<td><?php echo $table->getAddress(); ?></td>
+		</tr>
+	<?php endforeach; ?>
+</table>
+<br/>
+<h1>Add New Person</h1>
+
+<form action="<?php echo $this->getUrl("magentotwomodule/controllertwo/addtabledata")?>" method="post">
+
+  <div class="form-group">
+    <label for="name">add your name:</label>
+    <input type="name" class="input" name="name" id="name">
+  </div>
+  
+  <div class="form-group">
+    <label for="age">age:</label>
+    <input type="age" class="input" name="age" id="age">
+  </div>
+  
+  <div class="form-group">
+    <label for="address">address:</label>
+    <input type="address" class="input" name="address" id="address">
+  </div>
+  
+  <button type="submit" class="btn btn-default">Submit</button>
+
+</form
