@@ -12,7 +12,7 @@
              title="Customer Listing"
              module="MagentoTwo_MagentoModule"
              sortOrder="0"
-             action="frontnamebackend/customer/listing"
+             action="frontnamebackend/customer/show"
              parent="MagentoTwo_MagentoModule::Customer_demo"
              resource="Magento_Backend::content" />     
     </menu>

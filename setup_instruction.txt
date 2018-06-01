@@ -238,9 +238,45 @@ for this we create a layout to modify our admin menu at
 
 	MagentoModule->etc->adminhtml->menu.xml
 
+	look here , resource attribute decide the menu role management that is called acl rule in magento , according to acl rule we decide wheather to show this menu in admin panel or not if not defined properly we will br redirected to the dashboard again.if that happen we could twaek some setting in thr admin menun and make the urls pretty . action attribute will decide the url 
+
+	<add id="MagentoTwo_MagentoModule::second_level_demo"
+	     title="Customer Listing"
+	     module="MagentoTwo_MagentoModule"
+	     sortOrder="0"
+	     action="frontnamebackend/customer/show"
+	     parent="MagentoTwo_MagentoModule::Customer_demo"
+	     resource="Magento_Backend::content" /> 
+
+Backend module 
+-----------------------------------------------------------------------------------------------
+so we have created a menu item now now we will create a controller so that we have specified in the admin menu  
+	action="frontnamebackend/customer/show"
+for that lets create a file named named MagentoModule->Controller->Adminhtml->Customer->Show.php this class extends from \Magento\Backend\App\Action
+
+so by now we have a basic controller that just display an empty page with the admin theme , now for its functionality we will create layout and templates 
+
+create a model for the admin 
+	MagentoModule->Block->Adminhtml->Customer.php
+
+	here this module extends from \Magento\Backend\Block\Widget\Grid\Container 
+
+
+now we will create layout for the controller named routeridbackend_customer_show.xml 
+
+
+	here            <arguments>
+                        <argument name="id" xsi:type="string">id</argument>
+                        <argument name="dataSource" xsi:type="object">MagentoTwo\MagentoModule\Model\ResourceModel\Data\Collection</argument>
+                        <argument name="default_sort" xsi:type="string">id</argument>
+                        <argument name="default_dir" xsi:type="string">ASC</argument>
+                        <argument name="save_parameters_in_session" xsi:type="string">1</argument>
+                    </arguments>
+
+we will specify the collection for our magento module and will also specify the id for our page 
 	
 
-
+class="MagentoTwo\MagentoModule\Block\Adminhtml\Customer" name="mageplaza_post_grid" here we have specified our block that we have created before 
 
 
 
